@@ -1,0 +1,34 @@
+{
+    "name": "deliberry/date",
+    "description": "Datetime helpers",
+    "type": "library",
+    "keywords": [
+        "deliberry",
+        "date",
+        "datetime"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=7.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.0",
+
+        "php": ">=7.0"
+    },
+    "autoload": {
+        "exclude-from-classmap": [ "/test/" ],
+        "psr-4": {
+            "Deliberry\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "": "tests/"
+        }
+    },
+    "config": {
+        "bin-dir": "bin",
+        "vendor-dir": "lib"
+    }
+}
