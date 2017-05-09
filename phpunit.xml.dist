@@ -7,6 +7,10 @@
     bootstrap = "lib/autoload.php"
     colors = "true"
 >
+    <listeners>
+        <listener class="Deliberry\Date\Listener\PHPUnit\FreezeTimeListener" />
+    </listeners>
+
     <testsuites>
         <testsuite name="deliberry/date">
             <directory>test</directory>
