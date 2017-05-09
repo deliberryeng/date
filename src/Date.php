@@ -65,6 +65,10 @@ final class Date
      */
     public static function now(): DateTimeImmutable
     {
+        if (self::isTimeFrozen()) {
+            return self::$frozenInstants->top();
+        }
+
         return new DateTimeImmutable();
     }
 
@@ -81,9 +85,62 @@ final class Date
     }
 
     /**
+     * Allows time freezing for test purposes.
+     * Overrides current datetime.
+     * Multiple calls stack one on top of the other.
+     *
+     * @internal Use this method only in your tests.
+     *
+     * @param DateTimeImmutable $instant Datetime to set as current.
+     */
+    public static function freezeTime(DateTimeImmutable $instant): void
+    {
+        if (!self::$frozenInstants) {
+            self::$frozenInstants = new SplStack();
+        }
+
+        self::$frozenInstants->push($instant);
+    }
+
+    /**
+     * Removes current frozen instant.
+     * If stack is left empty, then time flows as usual again.
+     * Throws if the stack is already empty.
+     *
+     * @internal Use this method only in your tests.
+     *
+     * @return DateTimeImmutable Previous frozen instant.
+     */
+    public static function unfreezeTime(): DateTimeImmutable
+    {
+        if (!self::isTimeFrozen()) {
+            throw new \LogicException(
+                'Can’t pop frozen time from empty stack. Maybe one too many calls to `unfreezeTime()`?'
+            );
+        }
+
+        return self::$frozenInstants->pop();
+    }
+
+    /**
+     * Check freezeTime time status.
+     *
+     * @internal Use this method only in your tests.
+     *
+     * @return boolean Whether time is currently frozen.
+     */
+    public static function isTimeFrozen(): bool
+    {
+        return self::$frozenInstants && !self::$frozenInstants->isEmpty();
+    }
+
+    /**
      * Forbid public creation of instances of this class
      */
     private function __construct()
     {
     }
+
+    /** @var SplStack|DateTimeImmutable[]|null */
+    private static $frozenInstants;
 }
